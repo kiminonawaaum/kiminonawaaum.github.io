@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise for หนูนีม 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="kawaii-bg"></div>
+        <div class="loading-blob">
+            <div class="loading-emoji">🎁</div>
+            <div class="loading-ring"></div>
+        </div>
+        <p class="loading-text">กำลังเตรียมเซอร์ไพรส์<br>สักครู่นะ~ 💕</p>
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- Camera Request Screen -->
+    <div id="camera-screen" class="screen">
+        <div class="kawaii-bg"></div>
+        <div class="kawaii-card">
+            <div class="kawaii-card-deco top-left">🌸</div>
+            <div class="kawaii-card-deco top-right">✨</div>
+            <div class="kawaii-icon-circle pink">
+                <span class="kawaii-icon-emoji">📸</span>
+            </div>
+            <h2 class="kawaii-heading">เปิดกล้องหน่อยน้า~</h2>
+            <p class="kawaii-subtext">เว็บนี้ต้องใช้กล้อง<br>เพื่อเล่นเกมส์สักนิดนึงนะ 💕</p>
+            <button id="start-camera-btn" class="btn-kawaii">✨ เริ่มเลย!</button>
+            <div class="kawaii-card-deco bottom-right">💕</div>
+        </div>
+    </div>
+
+    <!-- Manual Fallback Screen -->
+    <div id="fallback-screen" class="screen">
+        <div class="kawaii-bg"></div>
+        <div class="kawaii-card">
+            <div class="kawaii-card-deco top-left">🌷</div>
+            <div class="kawaii-card-deco top-right">💫</div>
+            <div class="kawaii-icon-circle lavender">
+                <span class="kawaii-icon-emoji">🥺</span>
+            </div>
+            <h2 class="kawaii-heading">ไม่เป็นไรน้า~</h2>
+            <p class="kawaii-subtext">กดปุ่มด้านล่าง<br>แล้วจะรู้เลยว่ามีอะไร 🎁</p>
+            <button id="fallback-btn" class="btn-kawaii">💕 กดตรงนี้เลย!</button>
+        </div>
+    </div>
+
+    <!-- Gesture Detection Scene -->
+    <div id="gesture-scene" class="scene">
+        <div class="kawaii-bg animated"></div>
+        <div class="floating-particles" id="gesture-particles"></div>
+        
+        <div class="gesture-content">
+            <div class="gesture-header">
+                <div class="gesture-header-deco">🌸 🌸 🌸</div>
+                <h1 class="gesture-title">ชูนิ้วมาสิ~ <span class="bounce-emoji">💕</span></h1>
+                <div class="step-guide">
+                    <div class="step-item" id="step-1">
+                        <div class="step-bubble">☝️</div>
+                        <span>1 นิ้ว</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item" id="step-2">
+                        <div class="step-bubble">✌️</div>
+                        <span>2 นิ้ว</span>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step-item" id="step-3">
+                        <div class="step-bubble">🤟</div>
+                        <span>3 นิ้ว</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="webcam-wrapper">
+                <div class="webcam-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="gesture-canvas"></canvas>
+                    <canvas id="trail-canvas"></canvas>
+                    <div class="webcam-corner tl"></div>
+                    <div class="webcam-corner tr"></div>
+                    <div class="webcam-corner bl"></div>
+                    <div class="webcam-corner br"></div>
+                    <div class="hand-indicator" id="hand-indicator">✋ รอมือ...</div>
+                </div>
+                <div class="number-bubble" id="number-display">
+                    <span class="number-text" id="number-text">?</span>
+                </div>
+            </div>
+            
+            <div class="progress-track">
+                <div class="progress-step" id="dot-1"><span class="p-num">1</span><div class="p-heart">🌸</div></div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="dot-2"><span class="p-num">2</span><div class="p-heart">🌸</div></div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="dot-3"><span class="p-num">3</span><div class="p-heart">🌸</div></div>
+            </div>
+            
+            <div class="hint-bubble" id="gesture-hint">ชู 1 นิ้วให้เห็นนะ~ 👀</div>
+        </div>
+    </div>
+
+    <!-- Surprise Scene -->
+    <div id="surprise-scene" class="scene">
+        <div class="surprise-bg"></div>
+        <div class="confetti-container" id="confetti-container"></div>
+        <div class="floating-hearts" id="floating-hearts"></div>
+        <div class="sparkles" id="sparkles"></div>
+        
+        <div class="surprise-content">
+            <!-- Title Section -->
+            <div class="title-section">
+                <div class="title-deco-top">🌸 ✨ 🌸 ✨ 🌸</div>
+                <h1 class="surprise-title" id="surprise-title"></h1>
+                <div class="name-badge">
+                    <span class="name-badge-emoji">💕</span>
+                    <h2 class="surprise-name">หนูนีม</h2>
+                    <span class="name-badge-emoji">💕</span>
+                </div>
+                <p class="surprise-message">ครบ 2 ปี 3 เดือนแล้วนะ 🥰</p>
+            </div>
+
+            <!-- Film Strip Gallery -->
+            <div class="film-strip-section">
+                <p class="film-title">🎞️ ภาพความทรงจำ</p>
+                <div class="film-strip-wrapper">
+                    <div class="film-holes-row">
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                    </div>
+                    <div class="film-track" id="film-track"></div>
+                    <div class="film-holes-row">
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secret Heart Section -->
+            <div class="secret-heart-container">
+                <div class="secret-heart" id="secret-heart">💌</div>
+                <div class="secret-message-card" id="secret-message-card">
+                    <div class="secret-content">
+                        <h3>💌 ข้อความลับของผม</h3>
+                        <p>หนูนีม อยู่ด้วยกันทำให้ทุกวันมีความหมายมากขึ้นเลย 💕<br>สัญญาว่าจะดูแลและอยู่ข้างๆ นะ<br>รักมากที่สุด 💖</p>
+                        <span class="secret-close" id="secret-close">ปิด</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightbox-close">✕</button>
+            <button class="lightbox-prev" id="lightbox-prev">&#8249;</button>
+            <img class="lightbox-img" id="lightbox-img" src="" alt="">
+            <button class="lightbox-next" id="lightbox-next">&#8250;</button>
+            <div class="lightbox-counter" id="lightbox-counter"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
