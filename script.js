@@ -301,6 +301,7 @@ async function goToSurprise() {
         initLottieCharacters();
         initPhotoGallery();
         initSecretHeart();
+        initMusic();
         
         // Fade-in title lines
         if (els.surpriseTitle) {
@@ -535,6 +536,40 @@ function initLightbox() {
     });
 }
 
+/* ===== BACKGROUND MUSIC ===== */
+function initMusic() {
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    if (!bgm || !btn) return;
+
+    // Fade in from volume 0
+    bgm.volume = 0;
+    bgm.play().then(() => {
+        let vol = 0;
+        const fade = setInterval(() => {
+            vol = Math.min(vol + 0.05, 0.6);
+            bgm.volume = vol;
+            if (vol >= 0.6) clearInterval(fade);
+        }, 150);
+    }).catch(() => {
+        // Autoplay blocked - show button so user can tap to start
+    });
+
+    btn.classList.add('visible');
+
+    btn.addEventListener('click', () => {
+        if (bgm.paused) {
+            bgm.play();
+            btn.textContent = '🎵';
+            btn.classList.remove('muted');
+        } else {
+            bgm.pause();
+            btn.textContent = '🔇';
+            btn.classList.add('muted');
+        }
+    });
+}
+
 /* ===== SECRET HEART ===== */
 function initSecretHeart() {
     if (!els.secretHeart || !els.secretMessageCard || !els.secretClose) return;
@@ -663,6 +698,7 @@ async function goToSurpriseFromFallback() {
         initLottieCharacters();
         initPhotoGallery();
         initSecretHeart();
+        initMusic();
         
         if (els.surpriseTitle) {
             els.surpriseTitle.innerHTML = `

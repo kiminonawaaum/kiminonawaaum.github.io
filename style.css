@@ -611,6 +611,48 @@ html, body {
     pointer-events: none;
 }
 
+/* ===== MUSIC BUTTON ===== */
+.music-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 500;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #FF8FA3, #FF6B9D);
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #D94A6A, 0 8px 20px rgba(255, 107, 157, 0.4);
+    transition: all 0.15s ease;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: musicPulse 2s ease-in-out infinite;
+}
+
+.music-btn.visible {
+    display: flex;
+}
+
+.music-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #D94A6A;
+}
+
+.music-btn.muted {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    animation: none;
+    filter: grayscale(1);
+}
+
+@keyframes musicPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
 /* ===== LIGHTBOX ===== */
 .lightbox {
     position: fixed;
